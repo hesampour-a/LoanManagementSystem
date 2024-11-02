@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>LoanManagementSystem.TestTools</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\LoanManagementSystem.Persistence.Ef\LoanManagementSystem.Persistence.Ef.csproj" />
+      <ProjectReference Include="..\..\LoanManagement.Persistence.Ef\LoanManagement.Persistence.Ef.csproj" />
     </ItemGroup>
 
 

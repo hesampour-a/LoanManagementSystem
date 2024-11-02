@@ -2,17 +2,17 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LoanManagementSystem.Migration;
+namespace Library.Migration;
 
 internal class Program
 {
-    private static readonly string _dbName = "LoanManagementSystem_DB";
+    private static readonly string _dbName = "LoanManagementـDb";
 
     private static readonly string _connectionStringWithoutDatabase =
-        "server=.;Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true;";
+        "Server=DESKTOP-5LA4REF;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
 
     private static readonly string _connectionString =
-        $"server=.;database={_dbName};Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true;";
+        $"Server=DESKTOP-5LA4REF;database={_dbName};Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True";
 
     private static void EnsureDatabaseExists(string dbName,
         string connectionString)

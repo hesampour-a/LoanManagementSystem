@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LoanManagementSystem.Persistence.Ef\LoanManagementSystem.Persistence.Ef.csproj" />
+      <ProjectReference Include="..\LoanManagement.Persistence.Ef\LoanManagement.Persistence.Ef.csproj" />
     </ItemGroup>
 
 </Project>
