@@ -4,6 +4,7 @@ using LoanManagementSystem.Persistence.Ef.Admins;
 using LoanManagementSystem.Persistence.Ef.UnitOfWorks;
 using LoanManagementSystem.Services.Admins;
 using LoanManagementSystem.Services.Admins.Contracts;
+using LoanManagementSystem.TestTools.Admins;
 using LoanManagementSystem.TestTools.Infrastructure.DataBaseConfig.Integration;
 using Xunit;
 
@@ -15,9 +16,7 @@ public class AdminServiceTests : BusinessIntegrationTest
 
     public AdminServiceTests()
     {
-        var adminRepository = new EFAdminRepository(SetupContext);
-        var unitOfWork = new EfUnitOfWork(SetupContext);
-        _sut = new AdminAppService(adminRepository, unitOfWork);
+        _sut = AdminServiceFactory.Generate(SetupContext);
     }
 
     [Fact]

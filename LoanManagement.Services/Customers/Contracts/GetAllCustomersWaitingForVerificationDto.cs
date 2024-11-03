@@ -1,6 +1,6 @@
-﻿namespace LoanManagementSystem.Entities.Customers;
+﻿namespace LoanManagementSystem.Services.Customers.Contracts;
 
-public class Customer
+public class GetAllCustomersWaitingForVerificationDto
 {
     public int Id { get; set; }
     public required string FirstName { get; set; }
@@ -9,7 +9,4 @@ public class Customer
     public required string NationalCode { get; set; }
     public required string Email { get; set; }
     public string? IdentityDocument { get; set; }
-    public bool IsVerified { get; set; }
-
-    public CustomerFinancialInformation FinancialInformation { get; set; } 
 }

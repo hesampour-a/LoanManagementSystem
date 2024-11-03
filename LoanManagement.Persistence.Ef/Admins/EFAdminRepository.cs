@@ -9,4 +9,9 @@ public class EFAdminRepository(EfDataContext context) : AdminRepository
     {
         context.Set<Admin>().Add(admin);
     }
+
+    public Admin? FindById(int adminId)
+    {
+        return context.Set<Admin>().FirstOrDefault(x => x.Id == adminId);
+    }
 }
