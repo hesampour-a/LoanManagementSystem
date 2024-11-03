@@ -1,6 +1,6 @@
 ﻿using LoanManagementSystem.Entities.Customers;
 
-namespace LoanManagementSystem.Services.Customers.Contracts;
+namespace LoanManagementSystem.Services.Customers.Contracts.DTOs;
 
 public class UpdateCustomerFinancialInformationDto
 {

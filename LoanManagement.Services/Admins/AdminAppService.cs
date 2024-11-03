@@ -1,5 +1,6 @@
 ﻿using LoanManagementSystem.Entities.Admins;
 using LoanManagementSystem.Services.Admins.Contracts;
+using LoanManagementSystem.Services.Admins.Contracts.DTOs;
 using LoanManagementSystem.Services.UnitOfWorks;
 
 namespace LoanManagementSystem.Services.Admins;

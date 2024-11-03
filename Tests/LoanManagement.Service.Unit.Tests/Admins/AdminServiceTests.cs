@@ -4,6 +4,7 @@ using LoanManagementSystem.Persistence.Ef.Admins;
 using LoanManagementSystem.Persistence.Ef.UnitOfWorks;
 using LoanManagementSystem.Services.Admins;
 using LoanManagementSystem.Services.Admins.Contracts;
+using LoanManagementSystem.Services.Admins.Contracts.DTOs;
 using LoanManagementSystem.TestTools.Admins;
 using LoanManagementSystem.TestTools.Infrastructure.DataBaseConfig.Integration;
 using Xunit;

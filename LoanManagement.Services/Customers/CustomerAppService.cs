@@ -2,6 +2,7 @@
 using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.Admins.Exceptions;
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 using LoanManagementSystem.Services.Customers.Exceptions;
 using LoanManagementSystem.Services.UnitOfWorks;
 

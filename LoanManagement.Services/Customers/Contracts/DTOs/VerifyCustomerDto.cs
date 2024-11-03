@@ -1,4 +1,4 @@
-﻿namespace LoanManagementSystem.Services.Customers.Contracts;
+﻿namespace LoanManagementSystem.Services.Customers.Contracts.DTOs;
 
 public class VerifyCustomerDto
 {

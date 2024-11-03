@@ -1,4 +1,6 @@
-﻿namespace LoanManagementSystem.Services.Admins.Contracts;
+﻿using LoanManagementSystem.Services.Admins.Contracts.DTOs;
+
+namespace LoanManagementSystem.Services.Admins.Contracts;
 
 public interface AdminService
 {

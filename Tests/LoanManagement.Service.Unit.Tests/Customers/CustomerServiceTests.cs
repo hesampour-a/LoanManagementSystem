@@ -5,6 +5,7 @@ using LoanManagementSystem.Persistence.Ef.UnitOfWorks;
 using LoanManagementSystem.Services.Admins.Exceptions;
 using LoanManagementSystem.Services.Customers;
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 using LoanManagementSystem.Services.Customers.Exceptions;
 using LoanManagementSystem.TestTools.Admins;
 using LoanManagementSystem.TestTools.Customers;

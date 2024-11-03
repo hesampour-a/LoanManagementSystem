@@ -4,11 +4,11 @@ namespace LoanManagementSystem.TestTools.Admins;
 
 public static class AdminFactory
 {
-    public static Admin Generate()
+    public static Admin Generate(string adminName = "DummyAdmin")
     {
         return new Admin
         {
-            Name = "DummyAdmin",
+            Name = adminName
         };
     }
 }
