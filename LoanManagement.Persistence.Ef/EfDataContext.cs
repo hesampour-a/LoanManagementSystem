@@ -2,7 +2,8 @@
 
 namespace LoanManagementSystem.Persistence.Ef;
 
-public class EfDataContext : DbContext
+public class EfDataContext(DbContextOptions<EfDataContext> options)
+    : DbContext(options)
 {
     public EfDataContext(
         string connectionString)
@@ -12,12 +13,6 @@ public class EfDataContext : DbContext
     {
     }
 
-    public EfDataContext(
-        DbContextOptions<EfDataContext> options)
-        : base(options)
-    {
-    }
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

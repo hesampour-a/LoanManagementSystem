@@ -14,6 +14,6 @@ public class EFDataContextDatabaseFixture : DatabaseFixture
         
 
         return new EfDataContext(
-            $"server=.;database=BlocksDb;Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true;");
+            $"Server=DESKTOP-5LA4REF;database=LoanManagement_Db;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True");
     }
 }

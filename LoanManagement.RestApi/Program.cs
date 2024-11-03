@@ -1,5 +1,8 @@
 using LoanManagementSystem.Persistence.Ef;
+using LoanManagementSystem.Persistence.Ef.Admins;
 using LoanManagementSystem.Persistence.Ef.UnitOfWorks;
+using LoanManagementSystem.Services.Admins;
+using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +17,9 @@ builder.Services.AddDbContext<EfDataContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<UnitOfWork, EfUnitOfWork>();
+builder.Services.AddScoped<AdminService, AdminAppService>();
+builder.Services.AddScoped<AdminQuery, EFAdminQuery>();
+builder.Services.AddScoped<AdminRepository, EFAdminRepository>();
 
 var app = builder.Build();
 

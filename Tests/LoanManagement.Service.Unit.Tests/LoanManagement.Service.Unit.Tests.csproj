@@ -20,4 +20,10 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\LoanManagement.Persistence.Ef\LoanManagement.Persistence.Ef.csproj" />
+      <ProjectReference Include="..\..\LoanManagement.Services\LoanManagement.Services.csproj" />
+      <ProjectReference Include="..\LoanManagement.TestTools\LoanManagement.TestTools.csproj" />
+    </ItemGroup>
+
 </Project>
