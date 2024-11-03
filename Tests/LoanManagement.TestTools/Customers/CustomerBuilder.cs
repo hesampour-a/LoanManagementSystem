@@ -47,19 +47,19 @@ public class CustomerBuilder
 
     public CustomerBuilder WithNationalCode(string nationalCode)
     {
-        _customer.LastName = nationalCode;
+        _customer.NationalCode = nationalCode;
         return this;
     }
 
     public CustomerBuilder WithEmail(string email)
     {
-        _customer.LastName = email;
+        _customer.Email = email;
         return this;
     }
 
     public CustomerBuilder WithPhoneNumber(string phoneNumber)
     {
-        _customer.LastName = phoneNumber;
+        _customer.PhoneNumber = phoneNumber;
         return this;
     }
 

@@ -95,6 +95,13 @@ public class CustomerAppService(
     {
         var customer = customerRepository.FindById(customerId)
                        ?? throw new CustomerNotFoundException();
+        if (customer.NationalCode != dto.NationalCode)
+        {
+            if (customerRepository.IsDuplicated(dto.NationalCode))
+            {
+                throw new NationalCodeAlreadyExistsException();
+            }
+        }
 
         customer.Email = dto.Email;
         customer.FirstName = dto.FirstName;

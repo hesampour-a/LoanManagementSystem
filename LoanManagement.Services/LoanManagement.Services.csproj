@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Customers\Contracts\DTOs\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\LoanManagement.Entities\LoanManagement.Entities.csproj" />
     </ItemGroup>
 

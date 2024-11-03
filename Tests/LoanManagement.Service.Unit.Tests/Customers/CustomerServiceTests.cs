@@ -69,7 +69,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
         };
 
         var actual = () => _sut.Add(dto);
-        actual.Should().Throw<Exception>();
+        actual.Should().ThrowExactly<NationalCodeAlreadyExistsException>();
         ReadContext.Set<Customer>().Single().Should().BeEquivalentTo(
             new CustomerBuilder().WithId(customer.Id)
                 .WithNationalCode(nationalCode).Build());
@@ -188,7 +188,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
 
     [Fact]
     public void
-        VerfiyIdentityDocument_verify_a_customer_identity_document_properly()
+        VerifyIdentityDocument_verify_a_customer_identity_document_properly()
     {
         var admin = AdminFactory.Generate();
         Save(admin);
@@ -230,7 +230,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
     [Theory]
     [InlineData(-1)]
     public void
-        VerifyIdentityDocument_throws_excption_if_admin_dose_not_exists(
+        VerifyIdentityDocument_throws_exception_if_admin_dose_not_exists(
             int dummyId)
     {
         var actual = () =>
@@ -242,7 +242,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
     [Theory]
     [InlineData(-1)]
     public void
-        VerifyIdentityDocument_throws_excption_if_customer_dose_not_exists(
+        VerifyIdentityDocument_throws_exception_if_customer_dose_not_exists(
             int dummyId)
     {
         var admin = AdminFactory.Generate();
@@ -259,7 +259,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
 
     [Fact]
     public void
-        VerifyIdentityDocument_throws_excption_if_customer_dose_not_have_identity_document()
+        VerifyIdentityDocument_throws_exception_if_customer_dose_not_have_identity_document()
     {
         var admin = AdminFactory.Generate();
         Save(admin);
@@ -421,15 +421,43 @@ public class CustomerServiceTests : BusinessIntegrationTest
     [InlineData(-1)]
     public void Update_throw_exception_if_customer_dose_not_exists(int dummyId)
     {
-        var actual = () => _sut.Update(dummyId, new UpdateCustomerDto()
+        var dto = new UpdateCustomerDto()
         {
             Email = "test@test.com",
             FirstName = "edit",
             LastName = "test",
             NationalCode = "test",
             PhoneNumber = "mamad"
-        });
+        };
+        var actual = () => _sut.Update(dummyId, dto);
 
         actual.Should().ThrowExactly<CustomerNotFoundException>();
+    }
+
+    [Theory]
+    [InlineData("5555555555")]
+    public void Update_throw_exception_if_national_code_already_exists(
+        string nationalCode)
+    {
+        var customer1 = new CustomerBuilder().WithNationalCode(nationalCode)
+            .Build();
+        Save(customer1);
+        var customer2 = new CustomerBuilder().WithNationalCode("3333333333")
+            .Build();
+        Save(customer2);
+        var dto = new UpdateCustomerDto()
+        {
+            Email = "test@test.com",
+            FirstName = "edit",
+            LastName = "test",
+            NationalCode = nationalCode,
+            PhoneNumber = "mamad"
+        };
+
+        var actual = () => _sut.Update(customer2.Id, dto);
+
+        actual.Should().ThrowExactly<NationalCodeAlreadyExistsException>();
+        ReadContext.Set<Customer>().First(c => c.Id == customer2.Id)
+            .NationalCode.Should().Be("3333333333");
     }
 }
