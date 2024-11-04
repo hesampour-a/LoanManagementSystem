@@ -1,5 +1,6 @@
 ﻿using LoanManagementSystem.Entities.Customers;
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 
 namespace LoanManagementSystem.Services.Calculators;
 

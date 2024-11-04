@@ -6,6 +6,7 @@ using LoanManagementSystem.Services.Admins.Exceptions;
 using LoanManagementSystem.Services.Customers.Exceptions;
 using LoanManagementSystem.Services.LoanFormats.Exceptions;
 using LoanManagementSystem.Services.Loans.Contracts;
+using LoanManagementSystem.Services.Loans.Contracts.DTOs;
 using LoanManagementSystem.Services.Loans.Exceptions;
 using LoanManagementSystem.TestTools.Admins;
 using LoanManagementSystem.TestTools.Customers;

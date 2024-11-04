@@ -1,4 +1,5 @@
 ﻿using LoanManagementSystem.Entities.Customers;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 
 namespace LoanManagementSystem.Services.Customers.Contracts;
 
@@ -13,13 +14,4 @@ public interface CustomerRepository
     Customer? FindByIdIncludeFinancialInformation(int customerId);
     CustomerFinancialInformation? FindFinancialInformationByCustomerId(int customerId);
     void UpdateCustomerFinancialInformation(CustomerFinancialInformation financialInformation);
-}
-
-public class CustomerScoreInformationDto
-{
-    public decimal MonthlyIncome { get; set; }
-    public decimal TotalAssetsValue { get; set; }
-    public JobType JobType { get; set; }
-    public bool HasLoanAndRepaidInTime { get; set; }
-    public int LateRepaidInstallmentsCount { get; set; }
 }

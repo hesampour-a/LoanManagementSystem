@@ -1,6 +1,7 @@
 ﻿using LoanManagementSystem.Entities.Customers;
 using LoanManagementSystem.Entities.Loans;
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoanManagementSystem.Persistence.Ef.Customers;

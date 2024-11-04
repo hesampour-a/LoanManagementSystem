@@ -1,5 +1,6 @@
 ﻿using LoanManagementSystem.Entities.LoanFormats;
 using LoanManagementSystem.Services.LoanFormats.Contracts;
+using LoanManagementSystem.Services.LoanFormats.Contracts.DTOs;
 
 namespace LoanManagementSystem.Persistence.Ef.LoanFormats;
 

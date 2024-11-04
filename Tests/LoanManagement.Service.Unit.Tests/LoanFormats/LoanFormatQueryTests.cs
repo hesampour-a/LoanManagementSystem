@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using LoanManagementSystem.Services.LoanFormats.Contracts;
+using LoanManagementSystem.Services.LoanFormats.Contracts.DTOs;
 using LoanManagementSystem.TestTools.Infrastructure.DataBaseConfig.Integration;
 using LoanManagementSystem.TestTools.LoanFormats;
 using Xunit;

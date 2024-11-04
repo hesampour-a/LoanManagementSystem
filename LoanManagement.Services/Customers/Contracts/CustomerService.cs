@@ -1,5 +1,4 @@
-﻿using LoanManagementSystem.Entities.Customers;
-using LoanManagementSystem.Services.Customers.Contracts.DTOs;
+﻿using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 
 namespace LoanManagementSystem.Services.Customers.Contracts;
 
@@ -20,11 +19,4 @@ public interface CustomerService
     void Update(int customerId, UpdateCustomerDto dto);
     void RejectIdentityDocument(int adminId, RejectIdentityDocumentDto dto);
     void UpdateCustomerFinancialInformation(int customerId, UpdateCustomerFinancialInformationDto dto);
-}
-
-public class UpdateCustomerFinancialInformationDto
-{
-    public decimal MonthlyIncome { get; set; }
-    public decimal TotalAssetsValue { get; set; }
-    public JobType JobType { get; set; }
 }
