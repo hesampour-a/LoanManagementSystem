@@ -1,4 +1,6 @@
-﻿namespace LoanManagementSystem.Entities.Customers;
+﻿using LoanManagementSystem.Entities.Loans;
+
+namespace LoanManagementSystem.Entities.Customers;
 
 public class Customer
 {
@@ -11,5 +13,8 @@ public class Customer
     public string? IdentityDocument { get; set; }
     public bool IsVerified { get; set; }
 
-    public CustomerFinancialInformation FinancialInformation { get; set; } 
+    public CustomerFinancialInformation? FinancialInformation { get; set; } =
+        default!;
+
+    public List<Loan> Loans { get; set; } = [];
 }

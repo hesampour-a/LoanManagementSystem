@@ -8,6 +8,15 @@ public interface CustomerRepository
     bool IsDuplicated(string nationalCode);
     Customer? FindById(int customerId);
     void Update(Customer customer);
-    void AddFinancialInformation(CustomerFinancialInformation financialInformation);
-    void CustomerFinancialInformation(Customer customer);
+    void UpdateCustomerFinancialInformation(Customer customer);
+    CustomerScoreInformationDto? FindScoreInformationById(int customerId);
+}
+
+public class CustomerScoreInformationDto
+{
+    public decimal MonthlyIncome { get; set; }
+    public decimal TotalAssetsValue { get; set; }
+    public JobType JobType { get; set; }
+    public bool HasLoanAndRepaidInTime { get; set; }
+    public int LateRepaidInstallmentsCount { get; set; }
 }

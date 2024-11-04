@@ -88,7 +88,7 @@ public class CustomerAppService(
             TotalAssetsValue = dto.TotalAssetsValue,
         };
 
-        customerRepository.CustomerFinancialInformation(customer);
+        customerRepository.UpdateCustomerFinancialInformation(customer);
         unitOfWork.Save();
     }
 

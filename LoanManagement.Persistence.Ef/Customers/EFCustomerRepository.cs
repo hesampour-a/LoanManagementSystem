@@ -1,4 +1,5 @@
 ﻿using LoanManagementSystem.Entities.Customers;
+using LoanManagementSystem.Entities.Loans;
 using LoanManagementSystem.Services.Customers.Contracts;
 
 namespace LoanManagementSystem.Persistence.Ef.Customers;
@@ -26,15 +27,50 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
             .Update(customer);
     }
 
-    public void AddFinancialInformation(
-        CustomerFinancialInformation financialInformation)
-    {
-        context.Set<CustomerFinancialInformation>().Add(financialInformation);
-    }
+   
 
-    public void CustomerFinancialInformation(Customer customer)
+    public void UpdateCustomerFinancialInformation(Customer customer)
     {
         context.Set<CustomerFinancialInformation>()
             .Update(customer.FinancialInformation);
+    }
+
+    public CustomerScoreInformationDto? FindScoreInformationById(int customerId)
+    {
+        var customer = context.Set<Customer>()
+            .Where(c => c.Id == customerId)
+            .Select(c => new
+            {
+                JobType = c.FinancialInformation != null
+                    ? c.FinancialInformation.JobType
+                    : JobType.Unemployed,
+                MonthlyIncome = c.FinancialInformation != null
+                    ? c.FinancialInformation.MonthlyIncome
+                    : 0,
+                TotalAssetsValue = c.FinancialInformation != null
+                    ? c.FinancialInformation.TotalAssetsValue
+                    : 0,
+                LateRepaidInstallments = c.Loans
+                    .SelectMany(l => l.Installments)
+                    .Count(i =>
+                        i.PaidDate.HasValue && i.PaidDate > i.ShouldPayDate),
+                HasLoanAndRepaidInTime = c.Loans.Any(l =>
+                    l.LoanStatus == LoanStatus.Closed &&
+                    !l.Installments.Any(i =>
+                        i.PaidDate.HasValue && i.PaidDate > i.ShouldPayDate))
+            })
+            .FirstOrDefault();
+
+        if (customer == null) return null;
+
+        // نگاشت نتیجه میانی به DTO نهایی
+        return new CustomerScoreInformationDto
+        {
+            JobType = customer.JobType,
+            MonthlyIncome = customer.MonthlyIncome,
+            TotalAssetsValue = customer.TotalAssetsValue,
+            LateRepaidInstallmentsCount = customer.LateRepaidInstallments,
+            HasLoanAndRepaidInTime = customer.HasLoanAndRepaidInTime
+        };
     }
 }

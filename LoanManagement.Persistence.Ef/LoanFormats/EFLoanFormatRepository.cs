@@ -10,4 +10,9 @@ public class EFLoanFormatRepository(EfDataContext context)
     {
         context.Set<LoanFormat>().Add(loanFormat);
     }
+
+    public LoanFormat? FindById(int loanFormatId)
+    {
+        return context.Set<LoanFormat>().FirstOrDefault(l=>l.Id == loanFormatId);
+    }
 }

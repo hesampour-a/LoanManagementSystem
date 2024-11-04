@@ -12,7 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Installments\Contracts\DTOs\" />
       <Folder Include="LoanFormats\Contracts\DTOs\" />
+      <Folder Include="Loans\Contracts\DTOs\" />
     </ItemGroup>
 
 </Project>

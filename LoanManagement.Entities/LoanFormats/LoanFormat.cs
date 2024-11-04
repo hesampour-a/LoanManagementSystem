@@ -1,4 +1,6 @@
-﻿namespace LoanManagementSystem.Entities.LoanFormats;
+﻿using LoanManagementSystem.Entities.Loans;
+
+namespace LoanManagementSystem.Entities.LoanFormats;
 
 public class LoanFormat
 {
@@ -9,4 +11,5 @@ public class LoanFormat
     public decimal MonthlyInterestAmount { get; set; }
     public decimal MonthlyRepayAmount { get; set; }
     public decimal MonthlyPenaltyAmount { get; set; }
+    public List<Loan> Loans { get; set; } = [];
 }
