@@ -13,7 +13,11 @@ public class Customer
     public string? IdentityDocument { get; set; }
     public bool IsVerified { get; set; }
 
-    public CustomerFinancialInformation? FinancialInformation { get; set; } =
+    public CustomerFinancialInformation? CustomerFinancialInformation
+    {
+        get;
+        set;
+    } =
         default!;
 
     public List<Loan> Loans { get; set; } = [];

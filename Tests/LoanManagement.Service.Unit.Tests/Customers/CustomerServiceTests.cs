@@ -49,7 +49,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
             PhoneNumber = dto.PhoneNumber,
             IsVerified = false,
             IdentityDocument = null
-        }, options => options.Excluding(x => x.FinancialInformation));
+        }, options => options.Excluding(x => x.CustomerFinancialInformation));
     }
 
     [Theory]
@@ -219,13 +219,15 @@ public class CustomerServiceTests : BusinessIntegrationTest
                 .WithId(customer1.Id)
                 .WithIdentityDocument("dummyUrl")
                 .WithIsVerified(false)
-                .Build(), o => o.Excluding(c => c.FinancialInformation));
+                .Build(),
+            o => o.Excluding(c => c.CustomerFinancialInformation));
         expected.Should().ContainEquivalentOf(
             new CustomerBuilder()
                 .WithId(customer2.Id)
                 .WithIdentityDocument("dummyUrl")
                 .WithIsVerified(true)
-                .Build(), o => o.Excluding(c => c.FinancialInformation));
+                .Build(),
+            o => o.Excluding(c => c.CustomerFinancialInformation));
     }
 
     [Theory]
@@ -331,12 +333,74 @@ public class CustomerServiceTests : BusinessIntegrationTest
         actual.Should().ThrowExactly<CustomerNotFoundException>();
     }
 
+
+    [Fact]
+    public void
+        AddCustomerFinancialInformation_add_a_customers_financial_information_properly()
+    {
+        var customer1 = new CustomerBuilder()
+            .Build();
+        Save(customer1);
+        var dto = new AddCustomerFinancialInformationDto
+        {
+            JobType = JobType.Government,
+            MonthlyIncome = 10000000,
+            TotalAssetsValue = 10000000000
+        };
+
+        _sut.AddCustomerFinancialInformation(customer1.Id, dto);
+
+        var expected =
+            ReadContext.Set<Customer>()
+                .Include(c => c.CustomerFinancialInformation)
+                .Single();
+        expected.Should().BeEquivalentTo(new Customer
+        {
+            Id = customer1.Id,
+            Email = customer1.Email,
+            FirstName = customer1.FirstName,
+            LastName = customer1.LastName,
+            NationalCode = customer1.NationalCode,
+            PhoneNumber = customer1.PhoneNumber,
+            IsVerified = customer1.IsVerified,
+            IdentityDocument = customer1.IdentityDocument,
+        }, o => o.Excluding(c => c.CustomerFinancialInformation));
+
+        expected.CustomerFinancialInformation.JobType.Should().Be(dto.JobType);
+        expected.CustomerFinancialInformation.MonthlyIncome.Should()
+            .Be(dto.MonthlyIncome);
+        expected.CustomerFinancialInformation.TotalAssetsValue.Should()
+            .Be(dto.TotalAssetsValue);
+        expected.CustomerFinancialInformation.CustomerId.Should()
+            .Be(customer1.Id);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    public void
+        AddCustomerFinancialInformation_throw_excption_if_customer_dose_not_exists(
+            int dummyId)
+    {
+        var actual = () => _sut.AddCustomerFinancialInformation(dummyId,
+            new AddCustomerFinancialInformationDto());
+
+        actual.Should().ThrowExactly<CustomerNotFoundException>();
+    }
+
     [Fact]
     public void
         UpdateCustomerFinancialInformation_update_a_customers_financial_information_properly()
     {
         var customer1 = new CustomerBuilder()
             .Build();
+        customer1.CustomerFinancialInformation =
+            new CustomerFinancialInformation
+            {
+                CustomerId = customer1.Id,
+                MonthlyIncome = 15000000,
+                TotalAssetsValue = 140000000,
+                JobType = JobType.Free
+            };
         Save(customer1);
         var dto = new UpdateCustomerFinancialInformationDto
         {
@@ -349,7 +413,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
 
         var expected =
             ReadContext.Set<Customer>()
-                .Include(c => c.FinancialInformation)
+                .Include(c => c.CustomerFinancialInformation)
                 .Single();
         expected.Should().BeEquivalentTo(new Customer
         {
@@ -361,14 +425,15 @@ public class CustomerServiceTests : BusinessIntegrationTest
             PhoneNumber = customer1.PhoneNumber,
             IsVerified = customer1.IsVerified,
             IdentityDocument = customer1.IdentityDocument,
-        }, o => o.Excluding(c => c.FinancialInformation));
+        }, o => o.Excluding(c => c.CustomerFinancialInformation));
 
-        expected.FinancialInformation.JobType.Should().Be(dto.JobType);
-        expected.FinancialInformation.MonthlyIncome.Should()
+        expected.CustomerFinancialInformation.JobType.Should().Be(dto.JobType);
+        expected.CustomerFinancialInformation.MonthlyIncome.Should()
             .Be(dto.MonthlyIncome);
-        expected.FinancialInformation.TotalAssetsValue.Should()
+        expected.CustomerFinancialInformation.TotalAssetsValue.Should()
             .Be(dto.TotalAssetsValue);
-        expected.FinancialInformation.CustomerId.Should().Be(customer1.Id);
+        expected.CustomerFinancialInformation.CustomerId.Should()
+            .Be(customer1.Id);
     }
 
     [Theory]
@@ -404,7 +469,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
         var expected = ReadContext.Set<Customer>().ToList();
         expected.Should().HaveCount(2);
         expected.Should().ContainEquivalentOf(customer1,
-            o => o.Excluding(c => c.FinancialInformation));
+            o => o.Excluding(c => c.CustomerFinancialInformation));
         expected.Should().ContainEquivalentOf(new Customer
         {
             Id = customer2.Id,
@@ -415,7 +480,7 @@ public class CustomerServiceTests : BusinessIntegrationTest
             PhoneNumber = dto.PhoneNumber,
             IsVerified = false,
             IdentityDocument = null,
-        }, o => o.Excluding(c => c.FinancialInformation));
+        }, o => o.Excluding(c => c.CustomerFinancialInformation));
     }
 
     [Theory]

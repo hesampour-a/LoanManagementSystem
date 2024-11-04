@@ -6,6 +6,7 @@ public interface LoanService
     void Confirm(int adminId, int loanId);
     void Reject(int adminId, int loan2Id);
     void Pay(int adminId, int loan2Id);
+    void UpdateDeferreds();
 }
 
 public class AddLoanDto

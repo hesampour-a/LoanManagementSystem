@@ -75,20 +75,20 @@ public class CustomerAppService(
         unitOfWork.Save();
     }
 
-    public void UpdateCustomerFinancialInformation(int customerId,
-        UpdateCustomerFinancialInformationDto dto)
+    public void AddCustomerFinancialInformation(int customerId,
+        AddCustomerFinancialInformationDto dto)
     {
         var customer = customerRepository.FindById(customerId)
                        ?? throw new CustomerNotFoundException();
 
-        customer.FinancialInformation = new CustomerFinancialInformation
+        customer.CustomerFinancialInformation = new CustomerFinancialInformation
         {
             JobType = dto.JobType,
             MonthlyIncome = dto.MonthlyIncome,
             TotalAssetsValue = dto.TotalAssetsValue,
         };
 
-        customerRepository.UpdateCustomerFinancialInformation(customer);
+        customerRepository.AddCustomerFinancialInformation(customer);
         unitOfWork.Save();
     }
 
@@ -127,6 +127,26 @@ public class CustomerAppService(
         customer.IsVerified = false;
         customer.IdentityDocument = null;
         customerRepository.Update(customer);
+        unitOfWork.Save();
+    }
+
+    public void UpdateCustomerFinancialInformation(int customerId,
+        UpdateCustomerFinancialInformationDto dto)
+    {
+        var customer =
+            customerRepository.FindByIdIncludeFinancialInformation(customerId)
+            ?? throw new CustomerNotFoundException();
+
+        customer.CustomerFinancialInformation =
+            new CustomerFinancialInformation()
+            {
+                JobType = dto.JobType,
+                MonthlyIncome = dto.MonthlyIncome,
+                TotalAssetsValue = dto.TotalAssetsValue,
+            };
+
+        customerRepository.UpdateCustomerFinancialInformation(customer
+            .CustomerFinancialInformation);
         unitOfWork.Save();
     }
 }

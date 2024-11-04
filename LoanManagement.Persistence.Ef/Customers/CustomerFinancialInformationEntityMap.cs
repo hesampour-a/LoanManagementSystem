@@ -14,7 +14,7 @@ public class
         builder.ToTable("CustomerFinancialInformations");
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
-        builder.HasOne(_ => _.Customer).WithOne(_ => _.FinancialInformation)
+        builder.HasOne(_ => _.Customer).WithOne(_ => _.CustomerFinancialInformation)
             .HasForeignKey<CustomerFinancialInformation>(_ => _.CustomerId);
     }
 }

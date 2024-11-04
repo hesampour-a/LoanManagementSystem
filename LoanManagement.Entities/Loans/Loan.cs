@@ -21,7 +21,7 @@ public enum LoanStatus
     Pending = 1,
     Confirmed = 2,
     Rejected = 3,
-    Refunding = 4,
-    Overdue = 5,
+    Repaymenting = 4,
+    Deferred = 5,
     Closed = 6,
 }

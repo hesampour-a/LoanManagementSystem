@@ -32,7 +32,7 @@ public class LoanServiceTests : BusinessIntegrationTest
             .WithIsVerified(true)
             .WithIdentityDocument("dummyUrl")
             .Build();
-        customer.FinancialInformation = new CustomerFinancialInformation
+        customer.CustomerFinancialInformation = new CustomerFinancialInformation
         {
             CustomerId = customer.Id,
             JobType = JobType.Government,
@@ -163,7 +163,7 @@ public class LoanServiceTests : BusinessIntegrationTest
     [InlineData(LoanStatus.Confirmed)]
     [InlineData(LoanStatus.Rejected)]
     [InlineData(LoanStatus.Closed)]
-    [InlineData(LoanStatus.Overdue)]
+    [InlineData(LoanStatus.Deferred)]
     public void Confirm_throws_exception_if_loan_status_is_not_pending(
         LoanStatus loanStatus)
     {
@@ -284,7 +284,7 @@ public class LoanServiceTests : BusinessIntegrationTest
     [InlineData(LoanStatus.Confirmed)]
     [InlineData(LoanStatus.Rejected)]
     [InlineData(LoanStatus.Closed)]
-    [InlineData(LoanStatus.Overdue)]
+    [InlineData(LoanStatus.Deferred)]
     public void Reject_throws_exception_if_loan_status_is_not_pending(
         LoanStatus loanStatus)
     {
@@ -335,7 +335,7 @@ public class LoanServiceTests : BusinessIntegrationTest
         expected.Should().ContainEquivalentOf(
             new LoanBuilder(customer.Id, loanFormat.Id)
                 .WithId(loan2.Id)
-                .WithLoanStatus(LoanStatus.Refunding)
+                .WithLoanStatus(LoanStatus.Repaymenting)
                 .Build(),
             o =>
                 o.Excluding(l => l.Customer)
@@ -352,5 +352,63 @@ public class LoanServiceTests : BusinessIntegrationTest
                     DateOnly.FromDateTime(DateTime.Today.AddMonths(i))
             }, o => o.Excluding(i => i.Id).Excluding(i => i.Loan));
         }
+    }
+
+    [Fact]
+    public void UpdateDeferred_sets_the_late_loan_status_to_deferred()
+    {
+        var admin = AdminFactory.Generate();
+        Save(admin);
+        var customer = new CustomerBuilder().Build();
+        Save(customer);
+        var loanFormat = LoanFormatFactory.Generate(installmentsCount: 2);
+        Save(loanFormat);
+        var loan1 = new LoanBuilder(customer.Id, loanFormat.Id)
+            .WithLoanStatus(LoanStatus.Repaymenting)
+            .Build();
+        loan1.Installments.Add(new Installment
+        {
+            LoanId = loan1.Id,
+            ShouldPayDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(1))
+        });
+        loan1.Installments.Add(new Installment
+        {
+            LoanId = loan1.Id,
+            ShouldPayDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(2))
+        });
+        Save(loan1);
+        var loan2 = new LoanBuilder(customer.Id, loanFormat.Id)
+            .WithLoanStatus(LoanStatus.Repaymenting)
+            .Build();
+        loan2.Installments.Add(new Installment
+        {
+            LoanId = loan2.Id,
+            ShouldPayDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1))
+        });
+        loan2.Installments.Add(new Installment
+        {
+            LoanId = loan2.Id,
+            ShouldPayDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-2))
+        });
+        Save(loan2);
+
+        _sut.UpdateDeferreds();
+
+        var expected = ReadContext.Set<Loan>().ToList();
+        expected.Should().HaveCount(2);
+        expected.Should().ContainEquivalentOf(loan1,
+            o =>
+                o.Excluding(l => l.Customer)
+                    .Excluding(l => l.LoanFormat)
+                    .Excluding(l => l.Installments));
+        expected.Should().ContainEquivalentOf(
+            new LoanBuilder(customer.Id, loanFormat.Id)
+                .WithId(loan2.Id)
+                .WithLoanStatus(LoanStatus.Deferred)
+                .Build(),
+            o =>
+                o.Excluding(l => l.Customer)
+                    .Excluding(l => l.LoanFormat)
+                    .Excluding(l => l.Installments));
     }
 }

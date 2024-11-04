@@ -2,5 +2,5 @@
 
 public interface InstallmentService
 {
-    
+    void Repayment(int adminId, int installmentId);
 }

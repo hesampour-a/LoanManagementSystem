@@ -104,10 +104,18 @@ public class LoanAppService(
             });
         }
 
-        loan.LoanStatus = LoanStatus.Refunding;
+        loan.LoanStatus = LoanStatus.Repaymenting;
 
         loanRepository.UpdateRangeLoanInstallments(loan);
         loanRepository.Update(loan);
+        unitOfWork.Save();
+    }
+
+    public void UpdateDeferreds()
+    {
+        var deferreds = loanRepository.GetAllDeferreds();
+        deferreds.ForEach(l => { l.LoanStatus = LoanStatus.Deferred; });
+        loanRepository.UpdateRange(deferreds);
         unitOfWork.Save();
     }
 }

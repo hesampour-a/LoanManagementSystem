@@ -7,7 +7,7 @@ public class CustomerFinancialInformation
     public decimal TotalAssetsValue { get; set; }
     public JobType JobType { get; set; }
     public int CustomerId { get; set; }
-    public Customer Customer { get; set; }
+    public Customer Customer { get; set; } = default!;
 }
 
 public enum JobType
