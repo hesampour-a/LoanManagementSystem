@@ -9,10 +9,3 @@ public class CustomerFinancialInformation
     public int CustomerId { get; set; }
     public Customer Customer { get; set; } = default!;
 }
-
-public enum JobType
-{
-    Government = 1,
-    Free = 2,
-    Unemployed = 3
-}

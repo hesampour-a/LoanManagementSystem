@@ -38,40 +38,30 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
 
     public CustomerScoreInformationDto? FindScoreInformationById(int customerId)
     {
-        var customer = context.Set<Customer>()
-            .Where(c => c.Id == customerId)
-            .Select(c => new
-            {
-                JobType = c.CustomerFinancialInformation != null
-                    ? c.CustomerFinancialInformation.JobType
-                    : JobType.Unemployed,
-                MonthlyIncome = c.CustomerFinancialInformation != null
-                    ? c.CustomerFinancialInformation.MonthlyIncome
-                    : 0,
-                TotalAssetsValue = c.CustomerFinancialInformation != null
-                    ? c.CustomerFinancialInformation.TotalAssetsValue
-                    : 0,
-                LateRepaidInstallments = c.Loans
-                    .SelectMany(l => l.Installments)
-                    .Count(i =>
-                        i.PaidDate.HasValue && i.PaidDate > i.ShouldPayDate),
-                HasLoanAndRepaidInTime = c.Loans.Any(l =>
-                    l.LoanStatus == LoanStatus.Closed &&
-                    !l.Installments.Any(i =>
-                        i.PaidDate.HasValue && i.PaidDate > i.ShouldPayDate))
-            })
-            .FirstOrDefault();
-
-        if (customer == null) return null;
-
-        return new CustomerScoreInformationDto
-        {
-            JobType = customer.JobType,
-            MonthlyIncome = customer.MonthlyIncome,
-            TotalAssetsValue = customer.TotalAssetsValue,
-            LateRepaidInstallmentsCount = customer.LateRepaidInstallments,
-            HasLoanAndRepaidInTime = customer.HasLoanAndRepaidInTime
-        };
+        return context.Set<Customer>().Where(c => c.Id == customerId).Select(
+            c =>
+                new CustomerScoreInformationDto
+                {
+                    JobType = c.CustomerFinancialInformation != null
+                        ? c.CustomerFinancialInformation.JobType
+                        : JobType.Unemployed,
+                    MonthlyIncome = c.CustomerFinancialInformation != null
+                        ? c.CustomerFinancialInformation.MonthlyIncome
+                        : 0,
+                    TotalAssetsValue = c.CustomerFinancialInformation != null
+                        ? c.CustomerFinancialInformation.TotalAssetsValue
+                        : 0,
+                    LateRepaidInstallmentsCount = c.Loans
+                        .SelectMany(l => l.Installments)
+                        .Count(i =>
+                            i.PaidDate.HasValue &&
+                            i.PaidDate > i.ShouldPayDate),
+                    HasLoanAndRepaidInTime = c.Loans.Any(l =>
+                        l.LoanStatus == LoanStatus.Closed &&
+                        !l.Installments.Any(i =>
+                            i.PaidDate.HasValue &&
+                            i.PaidDate > i.ShouldPayDate))
+                }).FirstOrDefault();
     }
 
     public Customer? FindByIdIncludeFinancialInformation(int customerId)

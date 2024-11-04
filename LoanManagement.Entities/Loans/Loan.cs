@@ -15,13 +15,3 @@ public class Loan
     public LoanFormat LoanFormat { get; set; } = default!;
     public List<Installment> Installments { get; set; } = [];
 }
-
-public enum LoanStatus
-{
-    Pending = 1,
-    Confirmed = 2,
-    Rejected = 3,
-    Repaymenting = 4,
-    Deferred = 5,
-    Closed = 6,
-}
