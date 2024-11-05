@@ -1,9 +1,11 @@
-﻿using LoanManagementSystem.Entities.Installments;
+﻿using LoanManagementSystem.Entities.Customers;
+using LoanManagementSystem.Entities.Installments;
 using LoanManagementSystem.Entities.Loans;
 using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.Admins.Exceptions;
-using LoanManagementSystem.Services.Calculators;
+
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 using LoanManagementSystem.Services.Customers.Exceptions;
 using LoanManagementSystem.Services.LoanFormats.Contracts;
 using LoanManagementSystem.Services.LoanFormats.Exceptions;
@@ -30,7 +32,7 @@ public class LoanAppService(
                          ?? throw new LoanFormatNotFoundException();
 
         int loanScore =
-            Calculator.CustomerLoanScore(customerInformation,
+            ClaculateCustomerLoanScore(customerInformation,
                 loanFormat.Amount);
 
         var loan = new Loan
@@ -118,5 +120,49 @@ public class LoanAppService(
         deferreds.ForEach(l => { l.LoanStatus = LoanStatus.Deferred; });
         loanRepository.UpdateRange(deferreds);
         unitOfWork.Save();
+    }
+    
+    private int ClaculateCustomerLoanScore(CustomerScoreInformationDto dto,
+        decimal loanAmount)
+    {
+        int score = 0;
+        if (dto.HasLoanAndRepaidInTime)
+        {
+            score += 30;
+        }
+
+        score -= (dto.LateRepaidInstallmentsCount * 5);
+
+        if (dto.MonthlyIncome > 10000000)
+        {
+            score += 10;
+        }
+        else if (5000000 <= dto.MonthlyIncome)
+        {
+            score += 5;
+        }
+
+        if (dto.JobType == JobType.Government)
+        {
+            score += 20;
+        }
+        else if (dto.JobType == JobType.Free)
+        {
+            score += 10;
+        }
+
+        decimal loanAmountAssetsValueRatio =
+            Math.Round(loanAmount / dto.TotalAssetsValue, 2);
+
+        if (loanAmountAssetsValueRatio < 0.5m)
+        {
+            score += 20;
+        }
+        else if (loanAmountAssetsValueRatio <= 0.7m)
+        {
+            score += 10;
+        }
+
+        return score;
     }
 }

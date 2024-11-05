@@ -1,7 +1,7 @@
 ﻿using LoanManagementSystem.Entities.LoanFormats;
 using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.Admins.Exceptions;
-using LoanManagementSystem.Services.Calculators;
+
 using LoanManagementSystem.Services.LoanFormats.Contracts;
 using LoanManagementSystem.Services.LoanFormats.Contracts.DTOs;
 using LoanManagementSystem.Services.UnitOfWorks;
@@ -22,19 +22,47 @@ public class LoanFormatAppService(
         {
             Amount = dto.Amount,
             InstallmentsCount = dto.InstallmentsCount,
-            InterestRate = Calculator.InterestRate(dto.InstallmentsCount),
+            InterestRate = ClaculateInterestRate(dto.InstallmentsCount),
             MonthlyInterestAmount =
-                Calculator.MonthlyInterestAmount(dto.Amount,
+                ClaculateMonthlyInterestAmount(dto.Amount,
                     dto.InstallmentsCount),
             MonthlyRepayAmount =
-                Calculator.MonthlyRepayAmount(dto.Amount,
+                ClaculateMonthlyRepayAmount(dto.Amount,
                     dto.InstallmentsCount),
             MonthlyPenaltyAmount =
-                Calculator.MonthlyPenaltyAmount(dto.Amount,
+                ClaculateMonthlyPenaltyAmount(dto.Amount,
                     dto.InstallmentsCount),
         };
 
         loanFormatRepository.Add(loanFormat);
         unitOfWork.Save();
+    }
+
+    private decimal ClaculateInterestRate(int installmentsCount)
+    {
+        return Math.Round(installmentsCount <= 12 ? 0.15m : 0.20m, 2);
+    }
+
+    private decimal ClaculateMonthlyInterestAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round(
+            (ClaculateInterestRate(installmentsCount) / 12) * amount, 2);
+    }
+
+    private decimal ClaculateMonthlyRepayAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round(amount / installmentsCount, 2);
+    }
+
+    private decimal ClaculateMonthlyPenaltyAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round(0.02m *
+                          ((ClaculateMonthlyInterestAmount(amount,
+                               installmentsCount)) +
+                           (ClaculateMonthlyRepayAmount(amount,
+                               installmentsCount))), 2);
     }
 }

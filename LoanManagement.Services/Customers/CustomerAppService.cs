@@ -10,7 +10,6 @@ namespace LoanManagementSystem.Services.Customers;
 
 public class CustomerAppService(
     CustomerRepository customerRepository,
-    CustomerQuery customerQuery,
     AdminRepository adminRepository,
     UnitOfWork unitOfWork) : CustomerService
 {
@@ -34,15 +33,7 @@ public class CustomerAppService(
         unitOfWork.Save();
         return customer.Id;
     }
-
-    public List<GetAllCustomersWaitingForVerificationDto>
-        GetAllCustomersWaitingForVerification(int adminId)
-    {
-        var admin = adminRepository.FindById(adminId)
-                    ?? throw new AdminNotFoundException();
-        return customerQuery.GetAllCustomersWaitingForVerification();
-    }
-
+    
     public void AddIdentityDocument(int customerId, AddIdentityDocumentDto dto)
     {
         var customer = customerRepository.FindById(customerId)
@@ -149,4 +140,6 @@ public class CustomerAppService(
             .CustomerFinancialInformation);
         unitOfWork.Save();
     }
+    
+   
 }

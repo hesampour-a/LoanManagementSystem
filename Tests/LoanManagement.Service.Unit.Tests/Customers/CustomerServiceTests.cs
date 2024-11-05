@@ -77,54 +77,6 @@ public class CustomerServiceTests : BusinessIntegrationTest
     }
 
     [Fact]
-    public void
-        GetAllWaitingForVerifications_get_all_customers_waiting_for_verification()
-    {
-        var admin = AdminFactory.Generate();
-        Save(admin);
-        var customer1 = new CustomerBuilder().Build();
-        Save(customer1);
-        var customer2 =
-            new CustomerBuilder()
-                .WithIdentityDocument("test")
-                .WithIsVerified(true)
-                .Build();
-        Save(customer2);
-        var customer3 = new CustomerBuilder()
-            .WithIdentityDocument("dummyDocTrl")
-            .WithIsVerified(false)
-            .Build();
-        Save(customer3);
-
-        var actual = _sut.GetAllCustomersWaitingForVerification(admin.Id);
-
-        actual.Should().HaveCount(1);
-        actual.Should().ContainEquivalentOf(
-            new GetAllCustomersWaitingForVerificationDto
-            {
-                Id = customer3.Id,
-                Email = customer3.Email,
-                FirstName = customer3.FirstName,
-                LastName = customer3.LastName,
-                NationalCode = customer3.NationalCode,
-                PhoneNumber = customer3.PhoneNumber,
-                IdentityDocument = customer3.IdentityDocument,
-            });
-    }
-
-    [Theory]
-    [InlineData(-1)]
-    public void
-        GetAllWaitingForVerifications_throws_exception_if_admin_does_not_exist(
-            int dummyAdminId)
-    {
-        var actual = () =>
-            _sut.GetAllCustomersWaitingForVerification(dummyAdminId);
-
-        actual.Should().ThrowExactly<AdminNotFoundException>();
-    }
-
-    [Fact]
     public void AddIdentityDocument_add_a_customer_identity_document_properly()
     {
         var customer1 = new CustomerBuilder().Build();

@@ -5,10 +5,6 @@ namespace LoanManagementSystem.Services.Customers.Contracts;
 public interface CustomerService
 {
     int Add(AddCustomerDto dto);
-
-    List<GetAllCustomersWaitingForVerificationDto>
-        GetAllCustomersWaitingForVerification(int adminId);
-
     void AddIdentityDocument(int customerId, AddIdentityDocumentDto dto);
     void VerifyCustomer(int adminId, VerifyCustomerDto dto);
 

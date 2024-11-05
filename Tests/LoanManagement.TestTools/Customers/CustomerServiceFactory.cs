@@ -10,10 +10,10 @@ public static class CustomerServiceFactory
 {
     public static CustomerAppService Generate(EfDataContext context)
     {
-        var customerQuery = new EFCustomerQuery(context);
         var adminRepository = new EFAdminRepository(context);
         var customerRepository = new EFCustomerRepository(context);
         var usnitOfWork = new EfUnitOfWork(context);
-        return new CustomerAppService(customerRepository,customerQuery,adminRepository, usnitOfWork);
+        return new CustomerAppService(customerRepository, adminRepository,
+            usnitOfWork);
     }
 }

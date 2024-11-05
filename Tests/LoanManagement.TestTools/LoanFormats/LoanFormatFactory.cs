@@ -1,5 +1,5 @@
 ﻿using LoanManagementSystem.Entities.LoanFormats;
-using LoanManagementSystem.Services.Calculators;
+
 
 namespace LoanManagementSystem.TestTools.LoanFormats;
 
@@ -12,13 +12,38 @@ public static class LoanFormatFactory
         {
             Amount = loanAmount,
             InstallmentsCount = installmentsCount,
-            InterestRate = Calculator.InterestRate(installmentsCount),
+            InterestRate = InterestRate(installmentsCount),
             MonthlyInterestAmount =
-                Calculator.MonthlyInterestAmount(loanAmount, installmentsCount),
+                MonthlyInterestAmount(loanAmount, installmentsCount),
             MonthlyPenaltyAmount =
-                Calculator.MonthlyPenaltyAmount(loanAmount, installmentsCount),
+                MonthlyPenaltyAmount(loanAmount, installmentsCount),
             MonthlyRepayAmount =
-                Calculator.MonthlyRepayAmount(loanAmount, installmentsCount),
+                MonthlyRepayAmount(loanAmount, installmentsCount),
         };
+    }
+
+    public static decimal InterestRate(int installmentsCount)
+    {
+        return Math.Round(installmentsCount <= 12 ? 0.15m : 0.20m, 2);
+    }
+
+    public static decimal MonthlyInterestAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round((InterestRate(installmentsCount) / 12) * amount, 2);
+    }
+
+    public static decimal MonthlyRepayAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round(amount / installmentsCount, 2);
+    }
+
+    public static decimal MonthlyPenaltyAmount(decimal amount,
+        int installmentsCount)
+    {
+        return Math.Round(0.02m *
+                          ((MonthlyInterestAmount(amount, installmentsCount)) +
+                           (MonthlyRepayAmount(amount, installmentsCount))), 2);
     }
 }

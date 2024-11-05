@@ -1,14 +1,20 @@
 using LoanManagementSystem.Persistence.Ef;
 using LoanManagementSystem.Persistence.Ef.Admins;
 using LoanManagementSystem.Persistence.Ef.Customers;
+using LoanManagementSystem.Persistence.Ef.Installments;
 using LoanManagementSystem.Persistence.Ef.LoanFormats;
+using LoanManagementSystem.Persistence.Ef.Loans;
 using LoanManagementSystem.Persistence.Ef.UnitOfWorks;
 using LoanManagementSystem.Services.Admins;
 using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.Customers;
 using LoanManagementSystem.Services.Customers.Contracts;
+using LoanManagementSystem.Services.Installments;
+using LoanManagementSystem.Services.Installments.Contracts;
 using LoanManagementSystem.Services.LoanFormats;
 using LoanManagementSystem.Services.LoanFormats.Contracts;
+using LoanManagementSystem.Services.Loans;
+using LoanManagementSystem.Services.Loans.Contracts;
 using LoanManagementSystem.Services.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +30,6 @@ builder.Services.AddDbContext<EfDataContext>(options =>
 
 builder.Services.AddScoped<UnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped<AdminService, AdminAppService>();
-builder.Services.AddScoped<AdminQuery, EFAdminQuery>();
 builder.Services.AddScoped<AdminRepository, EFAdminRepository>();
 builder.Services.AddScoped<CustomerService, CustomerAppService>();
 builder.Services.AddScoped<CustomerQuery, EFCustomerQuery>();
@@ -32,6 +37,11 @@ builder.Services.AddScoped<CustomerRepository, EFCustomerRepository>();
 builder.Services.AddScoped<LoanFormatService, LoanFormatAppService>();
 builder.Services.AddScoped<LoanFormatRepository, EFLoanFormatRepository>();
 builder.Services.AddScoped<LoanFormatQuery, EFLoanFormatQuery>();
+builder.Services.AddScoped<LoanQuery, EFLoanQuey>();
+builder.Services.AddScoped<LoanRepository, EFLoanRepository>();
+builder.Services.AddScoped<LoanService, LoanAppService>();
+builder.Services.AddScoped<InstallmentService, InstallmentAppService>();
+builder.Services.AddScoped<InstallmentRepository, EFInstallmentRepository>();
 
 var app = builder.Build();
 
