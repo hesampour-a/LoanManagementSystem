@@ -6,4 +6,6 @@ public interface CustomerQuery
 {
     List<GetAllCustomersWaitingForVerificationDto>
         GetAllCustomersWaitingForVerification();
+
+    List<GetAllHighRisksDto> GetAllHighRisks();
 }

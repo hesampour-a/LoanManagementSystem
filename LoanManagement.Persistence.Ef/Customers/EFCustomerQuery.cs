@@ -22,4 +22,27 @@ public class EFCustomerQuery(EfDataContext context) : CustomerQuery
                 Id = c.Id,
             }).ToList();
     }
+
+    public List<GetAllHighRisksDto> GetAllHighRisks()
+    {
+        return context.Set<Customer>().Where(c =>
+                c.Loans.SelectMany(l => l.Installments)
+                    .Count(i =>
+                        i.PaidDate > i.ShouldPayDate ||
+                        (i.PaidDate == null &&
+                         i.ShouldPayDate <
+                         DateOnly.FromDateTime(DateTime.Today))) >= 2)
+            .Select(c =>
+                new GetAllHighRisksDto
+                {
+                    CustomerId = c.Id,
+                    LateInstallmentsCount = c.Loans
+                        .SelectMany(c => c.Installments)
+                        .Count(i =>
+                            i.PaidDate > i.ShouldPayDate ||
+                            (i.PaidDate == null &&
+                             i.ShouldPayDate <
+                             DateOnly.FromDateTime(DateTime.Today))),
+                }).ToList();
+    }
 }

@@ -6,14 +6,14 @@ public static class InstallmentFactory
 {
     public static Installment Generate(
         int loanId,
-        DateOnly? loanDate = null,
+        DateOnly? shouldPayDate = null,
         DateOnly? paidDate = null)
     {
-        loanDate ??= DateOnly.FromDateTime(DateTime.Today.AddMonths(1));
+        shouldPayDate ??= DateOnly.FromDateTime(DateTime.Today.AddMonths(1));
         return new Installment
         {
             LoanId = loanId,
-            ShouldPayDate = loanDate.Value,
+            ShouldPayDate = shouldPayDate.Value,
             PaidDate = paidDate != null ? paidDate.Value : null,
         };
     }
