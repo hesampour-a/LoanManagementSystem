@@ -42,6 +42,7 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
             c =>
                 new CustomerScoreInformationDto
                 {
+                    IsVerified = c.IsVerified,
                     JobType = c.CustomerFinancialInformation != null
                         ? c.CustomerFinancialInformation.JobType
                         : JobType.Unemployed,
@@ -54,8 +55,10 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
                     LateRepaidInstallmentsCount = c.Loans
                         .SelectMany(l => l.Installments)
                         .Count(i =>
-                            i.PaidDate.HasValue &&
-                            i.PaidDate > i.ShouldPayDate),
+                            (i.PaidDate.HasValue &&
+                             i.PaidDate > i.ShouldPayDate) ||
+                            (i.PaidDate == null && i.ShouldPayDate <
+                                DateOnly.FromDateTime(DateTime.Today))),
                     HasLoanAndRepaidInTime = c.Loans.Any(l =>
                         l.LoanStatus == LoanStatus.Closed &&
                         !l.Installments.Any(i =>

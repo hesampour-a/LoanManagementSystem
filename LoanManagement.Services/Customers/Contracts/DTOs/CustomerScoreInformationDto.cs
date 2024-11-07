@@ -9,4 +9,5 @@ public class CustomerScoreInformationDto
     public JobType JobType { get; set; }
     public bool HasLoanAndRepaidInTime { get; set; }
     public int LateRepaidInstallmentsCount { get; set; }
+    public bool IsVerified { get; set; }
 }

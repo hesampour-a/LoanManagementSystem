@@ -21,7 +21,7 @@ public class LoanFormatServiceTests : BusinessIntegrationTest
 
     [Theory]
     [InlineData(100000000, 6)]
-    [InlineData(100000000, 12)]
+    [InlineData(150000000, 12)]
     [InlineData(100000000, 24)]
     public void Add_add_loan_format_properly(decimal loanAmount,
         int installmentsCount)

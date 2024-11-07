@@ -3,7 +3,6 @@ using LoanManagementSystem.Entities.Installments;
 using LoanManagementSystem.Entities.Loans;
 using LoanManagementSystem.Services.Admins.Contracts;
 using LoanManagementSystem.Services.Admins.Exceptions;
-
 using LoanManagementSystem.Services.Customers.Contracts;
 using LoanManagementSystem.Services.Customers.Contracts.DTOs;
 using LoanManagementSystem.Services.Customers.Exceptions;
@@ -30,6 +29,11 @@ public class LoanAppService(
             ?? throw new CustomerNotFoundException();
         var loanFormat = loanFormatRepository.FindById(dto.LoanFormatId)
                          ?? throw new LoanFormatNotFoundException();
+
+        if (!customerInformation.IsVerified)
+        {
+            throw new CustomerIsNotVerifiedException();
+        }
 
         int loanScore =
             ClaculateCustomerLoanScore(customerInformation,
@@ -121,7 +125,7 @@ public class LoanAppService(
         loanRepository.UpdateRange(deferreds);
         unitOfWork.Save();
     }
-    
+
     private int ClaculateCustomerLoanScore(CustomerScoreInformationDto dto,
         decimal loanAmount)
     {
@@ -151,8 +155,9 @@ public class LoanAppService(
             score += 10;
         }
 
-        decimal loanAmountAssetsValueRatio =
-            Math.Round(loanAmount / dto.TotalAssetsValue, 2);
+        decimal loanAmountAssetsValueRatio = dto.TotalAssetsValue > 0
+            ? Math.Round(loanAmount / dto.TotalAssetsValue, 2)
+            : 1;
 
         if (loanAmountAssetsValueRatio < 0.5m)
         {
@@ -163,6 +168,17 @@ public class LoanAppService(
             score += 10;
         }
 
-        return score;
+        if (score > 100)
+        {
+            return 100;
+        }
+        else if (score < 1)
+        {
+            return 1;
+        }
+        else
+        {
+            return score;
+        }
     }
 }

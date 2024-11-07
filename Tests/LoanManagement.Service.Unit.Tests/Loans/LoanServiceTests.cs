@@ -11,6 +11,7 @@ using LoanManagementSystem.Services.Loans.Exceptions;
 using LoanManagementSystem.TestTools.Admins;
 using LoanManagementSystem.TestTools.Customers;
 using LoanManagementSystem.TestTools.Infrastructure.DataBaseConfig.Integration;
+using LoanManagementSystem.TestTools.Installments;
 using LoanManagementSystem.TestTools.LoanFormats;
 using LoanManagementSystem.TestTools.Loans;
 using Xunit;
@@ -29,34 +30,143 @@ public class LoanServiceTests : BusinessIntegrationTest
     [Fact]
     public void Add_add_a_loan_properly()
     {
-        var customer = new CustomerBuilder()
+        var customer1 = new CustomerBuilder()
             .WithIsVerified(true)
             .WithIdentityDocument("dummyUrl")
             .Build();
-        customer.CustomerFinancialInformation = new CustomerFinancialInformation
-        {
-            CustomerId = customer.Id,
-            JobType = JobType.Government,
-            MonthlyIncome = 10000000,
-            TotalAssetsValue = 100000000
-        };
-        Save(customer);
+        customer1.CustomerFinancialInformation =
+            new CustomerFinancialInformation
+            {
+                CustomerId = customer1.Id,
+                JobType = JobType.Government,
+                MonthlyIncome = 10000000,
+                TotalAssetsValue = 100000000
+            };
+        Save(customer1);
+        var customer2 = new CustomerBuilder().WithIsVerified(true)
+            .WithIdentityDocument("dummyUrl")
+            .Build();
+        customer2.CustomerFinancialInformation =
+            new CustomerFinancialInformation
+            {
+                CustomerId = customer2.Id,
+                JobType = JobType.Free,
+                MonthlyIncome = 0,
+                TotalAssetsValue = 0
+            };
+        Save(customer2);
+        var customer3 = new CustomerBuilder()
+            .WithIsVerified(true)
+            .WithIdentityDocument("dummyUrl")
+            .Build();
+        customer3.CustomerFinancialInformation =
+            new CustomerFinancialInformation
+            {
+                CustomerId = customer3.Id,
+                JobType = JobType.Unemployed,
+                MonthlyIncome = 15000000,
+                TotalAssetsValue = 10000000000
+            };
+        Save(customer3);
         var loanFormat = LoanFormatFactory.Generate();
         Save(loanFormat);
         var dto = new AddLoanDto
         {
             LoanFormatId = loanFormat.Id,
         };
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var loan1 = new LoanBuilder(customer1.Id, loanFormat.Id)
+            .WithLoanStatus(LoanStatus.Deferred)
+            .Build();
+        Save(loan1);
+        var installment1 =
+            InstallmentFactory.Generate(
+                loan1.Id,
+                today.AddMonths(-4),
+                today.AddMonths(-3));
+        Save(installment1);
+        var installment2 =
+            InstallmentFactory.Generate(
+                loan1.Id,
+                today.AddMonths(-2),
+                today.AddMonths(-2));
+        Save(installment2);
+        var installment3 =
+            InstallmentFactory.Generate(
+                loan1.Id,
+                today.AddMonths(-1));
+        Save(installment3);
+        var loan2 = new LoanBuilder(customer2.Id, loanFormat.Id)
+            .WithLoanStatus(LoanStatus.Closed)
+            .Build();
+        Save(loan2);
+        var installment4 =
+            InstallmentFactory.Generate(
+                loan2.Id,
+                today.AddMonths(1),
+                today.AddMonths(1));
+        Save(installment4);
+        var installment5 =
+            InstallmentFactory.Generate(
+                loan2.Id,
+                today.AddMonths(2),
+                today.AddMonths(2));
+        Save(installment5);
+        var installment6 =
+            InstallmentFactory.Generate(
+                loan2.Id,
+                today.AddMonths(3),
+                today.AddMonths(3));
+        Save(installment6);
+        var loan3 = new LoanBuilder(customer3.Id, loanFormat.Id)
+            .WithLoanStatus(LoanStatus.Closed)
+            .Build();
+        Save(loan3);
+        var installment7 =
+            InstallmentFactory.Generate(
+                loan3.Id,
+                today.AddMonths(1),
+                today.AddMonths(1));
+        Save(installment7);
+        var installment8 =
+            InstallmentFactory.Generate(
+                loan3.Id,
+                today.AddMonths(2),
+                today.AddMonths(2));
+        Save(installment8);
+        var installment9 =
+            InstallmentFactory.Generate(
+                loan3.Id,
+                today.AddMonths(3),
+                today.AddMonths(3));
+        Save(installment9);
 
-        _sut.Add(customer.Id, dto);
+        _sut.Add(customer1.Id, dto);
+        _sut.Add(customer2.Id, dto);
+        _sut.Add(customer3.Id, dto);
 
-        var expected = ReadContext.Set<Loan>().Single();
-        expected.Should().BeEquivalentTo(new Loan
+        var expected = ReadContext.Set<Loan>().ToList();
+        expected.Should().HaveCount(6);
+        expected.Should().ContainEquivalentOf(new Loan
         {
             LoanFormatId = dto.LoanFormatId,
-            CustomerId = customer.Id,
+            CustomerId = customer1.Id,
             LoanStatus = LoanStatus.Rejected,
-            ValidationScore = 25,
+            ValidationScore = 15,
+        }, o => o.Excluding(l => l.Id));
+        expected.Should().ContainEquivalentOf(new Loan
+        {
+            LoanFormatId = dto.LoanFormatId,
+            CustomerId = customer2.Id,
+            LoanStatus = LoanStatus.Rejected,
+            ValidationScore = 40,
+        }, o => o.Excluding(l => l.Id));
+        expected.Should().ContainEquivalentOf(new Loan
+        {
+            LoanFormatId = dto.LoanFormatId,
+            CustomerId = customer3.Id,
+            LoanStatus = LoanStatus.Pending,
+            ValidationScore = 60,
         }, o => o.Excluding(l => l.Id));
     }
 
@@ -85,6 +195,24 @@ public class LoanServiceTests : BusinessIntegrationTest
         var actual = () => _sut.Add(customer.Id, dto);
 
         actual.Should().ThrowExactly<LoanFormatNotFoundException>();
+        ReadContext.Set<Loan>().Should().HaveCount(0);
+    }
+
+    [Fact]
+    public void Add_throw_exception_if_customer_is_not_verified()
+    {
+        var loanFormat = LoanFormatFactory.Generate();
+        Save(loanFormat);
+        var customer = new CustomerBuilder().Build();
+        Save(customer);
+        var dto = new AddLoanDto
+        {
+            LoanFormatId = loanFormat.Id,
+        };
+
+        var actual = () => _sut.Add(customer.Id, dto);
+
+        actual.Should().ThrowExactly<CustomerIsNotVerifiedException>();
         ReadContext.Set<Loan>().Should().HaveCount(0);
     }
 
