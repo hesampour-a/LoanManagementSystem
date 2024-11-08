@@ -1,10 +1,12 @@
-﻿using LoanManagementSystem.Entities.Loans;
+﻿using System.ComponentModel.DataAnnotations;
+using LoanManagementSystem.Entities.Loans;
 
 namespace LoanManagementSystem.Entities.LoanFormats;
 
 public class LoanFormat
 {
     public int Id { get; set; }
+    [Range(0, (double)decimal.MaxValue)] 
     public decimal Amount { get; set; }
     public int InstallmentsCount { get; set; }
     public decimal InterestRate { get; set; }
