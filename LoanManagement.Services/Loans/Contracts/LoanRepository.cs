@@ -8,7 +8,7 @@ public interface LoanRepository
     Loan? FindById(int loanId);
     void Update(Loan loan);
     Loan? FindByIdWithLoanFormat(int loanId);
-    void UpdateRangeLoanInstallments(Loan loan);
+    void AddRangeLoanInstallments(Loan loan);
     List<Loan> GetAllDeferreds();
     void UpdateRange(List<Loan> deferreds);
     Loan? FindByInstallmentIdIncludeInstallments(int installment1Id);

@@ -30,9 +30,9 @@ public class EFLoanRepository(EfDataContext context) : LoanRepository
             .FirstOrDefault(l => l.Id == loanId);
     }
 
-    public void UpdateRangeLoanInstallments(Loan loan)
+    public void AddRangeLoanInstallments(Loan loan)
     {
-        context.Set<Installment>().UpdateRange(loan.Installments);
+        context.Set<Installment>().AddRange(loan.Installments);
     }
 
     public List<Loan> GetAllDeferreds()

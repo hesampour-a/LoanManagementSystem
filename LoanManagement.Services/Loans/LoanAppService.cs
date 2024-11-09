@@ -113,7 +113,7 @@ public class LoanAppService(
 
         loan.LoanStatus = LoanStatus.Repaymenting;
 
-        loanRepository.UpdateRangeLoanInstallments(loan);
+        loanRepository.AddRangeLoanInstallments(loan);
         loanRepository.Update(loan);
         unitOfWork.Save();
     }

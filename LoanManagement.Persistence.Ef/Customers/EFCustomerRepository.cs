@@ -33,7 +33,7 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
     public void AddCustomerFinancialInformation(Customer customer)
     {
         context.Set<CustomerFinancialInformation>()
-            .Update(customer.CustomerFinancialInformation);
+            .Add(customer.CustomerFinancialInformation);
     }
 
     public CustomerScoreInformationDto? FindScoreInformationById(int customerId)
@@ -72,13 +72,6 @@ public class EFCustomerRepository(EfDataContext context) : CustomerRepository
         return context.Set<Customer>()
             .Include(c => c.CustomerFinancialInformation)
             .FirstOrDefault(c => c.Id == customerId);
-    }
-
-    public CustomerFinancialInformation? FindFinancialInformationByCustomerId(
-        int customerId)
-    {
-        return context.Set<CustomerFinancialInformation>()
-            .FirstOrDefault(c => c.CustomerId == customerId);
     }
 
     public void UpdateCustomerFinancialInformation(

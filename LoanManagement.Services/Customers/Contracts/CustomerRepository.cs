@@ -12,6 +12,6 @@ public interface CustomerRepository
     void AddCustomerFinancialInformation(Customer customer);
     CustomerScoreInformationDto? FindScoreInformationById(int customerId);
     Customer? FindByIdIncludeFinancialInformation(int customerId);
-    CustomerFinancialInformation? FindFinancialInformationByCustomerId(int customerId);
+   
     void UpdateCustomerFinancialInformation(CustomerFinancialInformation financialInformation);
 }

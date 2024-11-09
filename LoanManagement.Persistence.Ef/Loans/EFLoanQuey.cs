@@ -44,19 +44,19 @@ public class EFLoanQuey(EfDataContext context) : LoanQuery
                             : 0
                     }).ToList()
             })
-            .AsEnumerable() // انتقال محاسبه به حافظه
-            .Select(x => new GetAllRepaymentingAndDeferredDto
+            .AsEnumerable() 
+            .Select(l => new GetAllRepaymentingAndDeferredDto
             {
-                Id = x.Loan.Id,
-                LoanFormatId = x.Loan.LoanFormatId,
-                CustomerId = x.Loan.CustomerId,
-                ValidationScore = x.Loan.ValidationScore,
-                LoanStatus = x.Loan.LoanStatus,
-                TotalPaidUntilNow = x.TotalPaidInstallments.Sum(p =>
+                Id = l.Loan.Id,
+                LoanFormatId = l.Loan.LoanFormatId,
+                CustomerId = l.Loan.CustomerId,
+                ValidationScore = l.Loan.ValidationScore,
+                LoanStatus = l.Loan.LoanStatus,
+                TotalPaidUntilNow = l.TotalPaidInstallments.Sum(p =>
                     p.MonthlyInterestAmount +
                     p.MonthlyRepayAmount +
                     p.MonthlyPenaltyAmount),
-                RemainingInstallments = x.LoanInstallments
+                RemainingInstallments = l.LoanInstallments
                     .Where(i => !(i.PaidDate.HasValue))
                     .Select(i => new GetAllRemainingInstallmentsDto
                     {
